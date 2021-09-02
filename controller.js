@@ -15,24 +15,23 @@ if (!isNaN(input)) {
         segundoOperando = window.prompt("ingrese segundo operando: ")
         
         if (!isNaN(segundoOperando)) {
+            if(segundoOperando.trim() ==='' || segundoOperando === undefined ) segundoOperando = 0
             let resultado = 0
             segundoOperando = parseInt(segundoOperando)
 
             if (operacion === '/') {
-                resultado = input / segundoOperando
+                if(segundoOperando !== 0) resultado = input / segundoOperando
+                else window.alert("Cuidado!! no se puede dividir por Cero!!, fin del programa")
             } else if (operacion === '+') {
                 resultado = input + segundoOperando
             } else if (operacion === '-') {
                 resultado = input - segundoOperando
-            } else if (operacion === 'x') {
-                resultado = input * segundoOperando
             } else {
-                window.alert("La operacion NO es invalida, resultado = 0")
-                resultado = 0
+                resultado = input * segundoOperando
             }
 
-            window.alert(`EL resultado de la operacion ${input} ${operacion} ${segundoOperando} es: ${resultado} `)
-            
+            if(segundoOperando !== 0) window.alert(`EL resultado de la operacion ${input} ${operacion} ${segundoOperando} es: ${resultado} `)
+
         } else {
             window.alert("Segundo Operando NO es un numero, fin del programa")
         }
