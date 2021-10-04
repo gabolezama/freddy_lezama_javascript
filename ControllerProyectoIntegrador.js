@@ -199,7 +199,7 @@ function showSurveys() {
     }
 }
 
-//Si el usuario desea completar una encuesta
+//Si el usuario desea completar una encuesta, se renderiza el formulario
 function acceptSurveys(){
     continuar = true
     estadisticas.cantidad = continuar? estadisticas.cantidad + 1 : estadisticas.cantidad
@@ -264,7 +264,7 @@ function Enviar(){
     notSurveys()
 }
 
-//Si el usuario no quiere llenar ninguna encuesta, cerramos el formulario
+//Si el usuario no quiere llenar ninguna encuesta, eliminamos el formulario
 function notSurveys(){
     continuar = false
     estadisticas.cantidad = continuar? estadisticas.cantidad + 1 : estadisticas.cantidad
@@ -376,17 +376,20 @@ const formulario = document.getElementById('formulario')
 
 const splashScreen = document.getElementById("splash-screen")
 
+//Efecto de Splash Screen
 document.addEventListener('DOMContentLoaded', ()=>{
     setTimeout(()=>{
         splashScreen.className = "splash-hidden"
     }, 7000)
 })
 
+//Por defecto se chequea si existen datos almacenados
 if(localStorage.arrayEncuestas){
     const objetoRecupero = JSON.parse(localStorage.Estadisticas)
     estadisticas = new Estadisticas(objetoRecupero.cantidad, objetoRecupero.dniCount , objetoRecupero.passportCount , objetoRecupero.cedulaCount, objetoRecupero.normalCount, objetoRecupero.urgenteCount , objetoRecupero.edad)
 }
 
+//"Presentacion" despliega las opciones para el usuario
 const presentacion = document.getElementById("presentacion")
 presentacion.innerHTML =`
 <div id="ask-surveys" class="col-sm-3">
