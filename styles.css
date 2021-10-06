@@ -4,6 +4,10 @@ body{
     background: -webkit-linear-gradient(to right, #DECBA4, #3E5151);  /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(to right, #DECBA4, #3E5151); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
+h2{
+    margin-top: 1rem;
+    margin-left: 5rem;
+}
 .splash{
     position: absolute;
     top: 0;
@@ -32,11 +36,32 @@ body{
     width: 0%;
     height: 0%;
 }
+.animate__fadeOut {
+    --animate-duration: 5s;
+}
+#divForm{
+    margin-left: 30%;
+    width: 60vw;
+    position: absolute;
+    top: 2.5rem;
+}
 form{
     padding-top: 2rem;
 }
+.itemForm{
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+}
+
 form button{
     margin-top: 2rem;
-    margin-left: 3rem;
+    margin-left: 4rem;
     height: 2.5rem;
+}
+.showSurvey{
+    margin-left: 30%;
+    width: 60vw;
+    position: absolute;
+    top: 5rem;
 }

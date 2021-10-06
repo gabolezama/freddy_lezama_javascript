@@ -2,8 +2,9 @@
 let continuar = false
 let edadEstadisticas = false
 let toggleFlag = false
-let pasoFocus = 0
+let enviado = false
 let enviarEnable = false
+let i = 0
 const passRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*()--__+.])(?=.{8,})/i
 const numberRegex = /^\d*$/
 
@@ -22,21 +23,6 @@ class FormEncuesta {
         this.telefono = telefono;
         this.prioridad = prioridad;
         this.descripcion = descripcion;
-    }
-
-    show = () => {
-        alert(`
-            Usted completó lo siguiente:
-            Nombre: ${this.nombre}
-            Apellido: ${this.apellido}
-            Edad: ${this.edad}
-            Email: ${this.email}
-            Tipo de Documento: ${this.tipoDocumento}
-            Número de Documento: ${this.numeroDocumento}
-            Teléfono: ${this.telefono}
-            Prioridad: ${this.prioridad}
-            Descripcion: ${this.descripcion}
-        `)
     }
 }
 
@@ -106,43 +92,6 @@ const isValidNumber = ( variable, flag ) =>{
     let validNumber = numberRegex.test( variableParsed )
     return validNumber
 }
-
-//Función par convertir la seleccion del usiario (tipo numérico) en su String correspondiente
-const seleccionUsuario = (seleccion, seleccionFlag) =>{
-
-    if (seleccionFlag === "tipoDocumento") {
-        switch (seleccion) {
-            case 1:
-                encuesta.tipoDocumento = "DNI";
-                estadisticas.dniCount++;
-                break;
-            case 2:
-                encuesta.tipoDocumento = "Pasaporte";
-                estadisticas.passportCount++;
-                break;
-            case 3:
-                encuesta.tipoDocumento = "Cedula";
-                estadisticas.cedulaCount++;
-                break;
-        }
-    }else if(seleccionFlag === "prioridad"){
-        switch (seleccion) {
-            case 1:
-                encuesta.prioridad = "Normal";
-                estadisticas.normalCount++;
-                break;
-            case 2:
-                encuesta.prioridad = "Urgente";
-                estadisticas.urgenteCount++;
-                break;
-            default:
-                encuesta.prioridad = "Urgente";
-                estadisticas.urgenteCount++;
-                break;
-        }
-
-    }
-}
 //FUNCIONES ---- FUNCIONES ---- FUNCIONES ---- FUNCIONES
 
 //Función para cerrar Estadísticas o ENcuestas anteriores
@@ -156,9 +105,10 @@ const orderData = (a, b) => {
     return ((a > b) ? -1 : ((a < b) ? 1 : 0))
 }
 
-//Si prevaimente se han llenado enciuestas recupero las estadísticas anteriores
+//Si prevaimente se han llenado encuestas recupero las estadísticas anteriores
 function showStats(){
     const recupero = JSON.parse(localStorage.Estadisticas)
+
     estadisticas.cantidad = parseInt(recupero.cantidad)
     estadisticas.dniCount = parseInt(recupero.dniCount)
     estadisticas.passportCount = parseInt(recupero.passportCount)
@@ -171,59 +121,119 @@ function showStats(){
 }
 
 //Si prevaimente se han llenado encuestas se recuperan y se muestran
-function showSurveys() {
+function showSurveys(i) {
     const arrayRecupero = JSON.parse(localStorage.arrayEncuestas)
+    arrayRecupero.sort((a, b) => orderData(a.prioridad, b.prioridad))
+    
+    const surveyRender = document.getElementById('surveyRender')
 
-    if (Array.isArray(arrayRecupero)) {
-        //Las enuestas con prioridad "urgente" aparecen primero
-        arrayRecupero.sort((a, b) => orderData(a.prioridad, b.prioridad))
-        arrayRecupero.forEach((item, index) => {
-            alert(` Recuperando datos ateriores:
-                    Encuesta #${index + 1}:
-                    User: ${item.user}
-                    Contraseña: ${item.password}
-                    Nombre: ${item.nombre}
-                    Apellido: ${item.apellido}
-                    Edad: ${item.edad}
-                    Email: ${item.email}
-                    Tipo de Documento: ${item.tipoDocumento}
-                    Número de Documento: ${item.numeroDocumento}
-                    Teléfono: ${item.telefono}
-                    Prioridad: ${item.prioridad}
-                    Descripcion: ${item.descripcion}
-                `)
-            oldEncuesta = new FormEncuesta(item.nombre, item.apellido, item.edad, item.email, item.tipoDocumento,
-                item.numeroDocumento, item.telefono, item.prioridad, item.descripcion)
-            arrayEncuestas.push(oldEncuesta)
-        })
+    if (Array.isArray(arrayRecupero) && arrayRecupero[i] !== undefined) {
+        //Las encuestas con prioridad "urgente" aparecen primero
+
+    surveyRender.innerHTML = `
+            <div id="showSurveysDiv" class="container">
+                <div class="row">
+                    <div class="col-sm-2">
+                        <Label>User</Label> <br>
+                        <Label>${arrayRecupero[i].user}</Label> <br>
+                    </div>
+                    <div class="col-sm-2">
+                        <Label>Nombre</Label> <br>
+                        <Label>${arrayRecupero[i].nombre}</Label>
+                    </div>
+                    <div class="col-sm-2">
+                        <Label>Apellido</Label> <br>
+                        <Label>${arrayRecupero[i].apellido}</Label> <br>
+                    </div>
+                    
+                </div>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <Label>Edad</Label> <br>
+                        <Label>${arrayRecupero[i].edad}</Label>
+                    </div>
+                    <div class="col-sm-2">
+                        <Label>Email</Label> <br>
+                        <Label>${arrayRecupero[i].email}</Label>
+                    </div>
+                    <div class="col-sm-2">
+                        <Label>Tipo de Documento</Label> <br>
+                        <Label>${arrayRecupero[i].tipoDocumento}</Label>
+                    </div>
+                    
+                </div>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <Label>Nro de Documento</Label> <br>
+                        <Label>${arrayRecupero[i].numeroDocumento}</Label>
+                    </div>
+                    <div class="col-sm-2">
+                        <Label>Nro de Telefono</Label> <br>
+                        <Label>${arrayRecupero[i].telefono}</Label>
+                    </div>
+                    <div class="col-sm-2">
+                        <Label>Prioridad</Label> <br>
+                        <Label>${arrayRecupero[i].prioridad}</Label>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                        <Label>Descripcion</Label> <br>
+                        <Label>${arrayRecupero[i].descripcion}</Label>
+                </div>
+                <button type="button" onclick="showSurveys(${i+1})" class="btn btn-success">Sigiente</button>
+                <button type="button" onclick="Close('showSurveys')" class="btn btn-danger ml-5">Cerrar</button>
+                
+            </div>
+            `
+    }else if(!Array.isArray(arrayRecupero) || arrayRecupero[i] === undefined || arrayRecupero[i] === null){
+        i = 0
     }
 }
-
-//Si el usuario desea completar una encuesta, se renderiza el formulario
+//Si el usuario quiere llenar una encuesta se renderiza el formulario
 function acceptSurveys(){
-    continuar = true
-    estadisticas.cantidad = continuar? estadisticas.cantidad + 1 : estadisticas.cantidad
-
+    estadisticas.cantidad = enviado ? estadisticas.cantidad+1 : estadisticas.cantidad
+    enviado = false
+    console.log(estadisticas.cantidad);
     !toggleFlag && Array.isArray(arrayFormulario) && arrayFormulario.forEach((item) => {
 
         const itemForm = document.createElement('div')
-        itemForm.className = "mb-2 col-sm-3"
+        itemForm.className = "mb-2 col-sm-4 itemForm"
         itemForm.id=`itemForm__${item}`
 
         const type = item === 'password' ? "password" : item === 'email' ? "email" : (item === 'tipoDocumento' || item === 'numeroDocumento' || item === 'telefono' || item === 'edad' || item === 'prioridad') ? "number" : "text"
         const label = item === 'user'? "usuario" : item === 'password'? "contraseña" : item === 'tipoDocumento' ? "Tipo de Documento" : item === 'numeroDocumento'? "Numero de Documento" : `${item}`
-        if (item !== 'show') {
+
+        if (item !== 'show' && item !== 'tipoDocumento' && item !== 'prioridad') {
 
             itemForm.innerHTML = `
-            <label for="exampleFormControlInput1" class="form-label" id="${item}__input">${label}</label>
-            <input required type=${type} onFocus="inputFocus(event.target)" onChange="inputChange(event.target)" class="form-control" id="${item}__input" placeholder="Escriba su ${label}">    
+            <label for="${item}__input" class="form-label" id="${item}__inputLabel">${label}</label>
+            <input type=${type} onFocus="inputFocus(event.target)" onChange="inputChange(event.target)" class="form-control" id="${item}__input" placeholder="Escriba su ${label}">    
+            `
+            formulario.appendChild(itemForm)
+        }else if(item === 'tipoDocumento' || item === 'prioridad'){
+
+            itemForm.innerHTML = `
+            <label for="${item}__input" class="form-label" id="${item}__inputLabel">${label}</label>
+            <select id="${item}__input" onFocus="inputFocus(event.target)" onChange="inputChange(event.target)" class="form-select form-select-sm" aria-label=".form-select-sm example">
+                <option value="" selected>${item}</option>
+                ${item === 'tipoDocumento' ? 
+                
+                `<option value="DNI">DNI</option>
+                <option value="Pasaporte">Pasaporte</option>
+                <option value="Cedula">Cedula</option>`:
+
+                `<option value="Normal">Normal</option>
+                <option value="Urgente">Urgente</option>
+                `}
+            </select>   
             `
             formulario.appendChild(itemForm)
         }
     })
     formulario.innerHTML += !toggleFlag ? `
     <div id="formButtons">
-        <button id="btnEnviar" class="btn btn-primary" type="submit" onClick="Enviar()">Enviar</button>
+        <button id="btnEnviar" class="btn btn-primary ml-4" type="submit" onClick="Enviar()">Enviar</button>
+        <button type="button" onClick="Close('acceptSurveys')" class="btn btn-danger ml-8">Cancelar</button>
     <div>
     `: ``;
 
@@ -260,30 +270,40 @@ function Enviar(){
     }else{
         localStorage.setItem("Estadisticas", JSON.stringify(estadisticas))
     }
+    enviado = true
     estadisticas.show()
-    notSurveys()
+    Close('acceptSurveys')
 }
 
-//Si el usuario no quiere llenar ninguna encuesta, eliminamos el formulario
-function notSurveys(){
-    continuar = false
-    estadisticas.cantidad = continuar? estadisticas.cantidad + 1 : estadisticas.cantidad
-    
-    toggleFlag && Array.isArray(arrayFormulario) && arrayFormulario.forEach((item) => {
-        
-        if (item !== 'show') {
-            document.getElementById(`itemForm__${item}`).remove()
+//Funcion general para cerrar elementos
+function Close( tag ){
+
+        if(tag === 'acceptSurveys'){
+            continuar = false
+            estadisticas.cantidad = continuar? estadisticas.cantidad + 1 : estadisticas.cantidad
+            
+            toggleFlag && Array.isArray(arrayFormulario) && arrayFormulario.forEach((item) => {
+                
+                if (item !== 'show') {
+                    document.getElementById(`itemForm__${item}`).remove()
+                }
+            })
+            document.getElementById(`formButtons`).remove()
+            document.getElementById(`leyenda`).remove()
+            toggleFlag = false
+
+        }else if(tag === 'showSurveys'){
+            document.getElementById('showSurveysDiv').remove()
         }
-    })
-    document.getElementById(`formButtons`).remove()
-    document.getElementById(`leyenda`).remove()
-    toggleFlag = false
+        
 }
 
 //AL salir del campo se valida el valor ingresado
 function inputChange(target){
+
     const formField = target.id.slice(0,-7)
 
+    //Inserción del dato al objeto encuesta previa validación
     switch(target.type){
         case "text":
         case "password":
@@ -292,36 +312,37 @@ function inputChange(target){
             target.value = !isValidString(target.value, formField) ? '' : target.value
             break;
         case "number":
-            if(parseInt(target.value) > 0 && parseInt(target.value) < 4 && ( formField==='tipoDocumento' || formField==='prioridad' )){
-
-                encuesta[formField] = target.value
-                seleccionUsuario( parseInt(target.value) , formField)
-
-            }else if((parseInt(target.value) <= 0 || parseInt(target.value) >= 4) &&( formField==='tipoDocumento' || formField==='prioridad' )){
-
-                target.value = ''
-
-            }else{
-                encuesta[formField] = isValidNumber(target.value, formField) ? target.value : ''
-                target.value = !isValidNumber(target.value, formField) ? '' : target.value
-            }
+            encuesta[formField] = isValidNumber(target.value, formField) ? target.value : ''
+            target.value = !isValidNumber(target.value, formField) ? '' : target.value
+            
             if( !edadEstadisticas && formField === "edad" && target.value !== '') {
                 estadisticas.edad = parseInt(target.value)
                 edadEstadisticas = true
             }
             break;
-    }
+        case "select-one":
+            encuesta[formField] = target.value
+            estadisticas.dniCount = target.value === 'DNI' ? estadisticas.dniCount+1 : estadisticas.dniCount
+            estadisticas.passportCount = target.value ==='Pasaporte' ? estadisticas.passportCount+1 : estadisticas.passportCount
+            estadisticas.cedulaCount = target.value === 'cedula' ? estadisticas.cedulaCount+1 : estadisticas.passportCount
 
+            estadisticas.normalCount = target.value ==='Normal' ? estadisticas.normalCount+1 : estadisticas.normalCount
+            estadisticas.urgenteCount = target.value === 'Urgente' ? estadisticas.urgenteCount+1 : estadisticas.urgenteCount
+            break;
+    }
+    //Recorremos los campos del formulario
+    const found = Object.values(encuesta).find((valor)=>{
+        return valor === ""
+    })
+
+    //Si hay algun campo vacío se deshabilita el botón enviar
+    document.getElementById('btnEnviar').disabled = found !== undefined 
     console.log(encuesta)
 }
 
 //Muestra la LEYENDA según sea el campo que el usuario seleccione
 function inputFocus(target){
-    pasoFocus++ 
     
-    document.getElementById("btnEnviar").disabled = pasoFocus < 11
-    
-    console.log(pasoFocus, enviarEnable);
     const formField = target.id.slice(0,-7)
     const leyenda = document.getElementById('leyenda')
     console.log(leyenda);
@@ -346,16 +367,16 @@ function inputFocus(target){
             leyenda.innerText =`Leyenda: Correo con formato a@b.c`
             break;
         case 'tipoDocumento':
-            leyenda.innerText =`Leyenda: Tipo de Documento de Identidad: 1) DNI 2) Pasaporte 3) Cedula. Debe ser un dato puramente numérico`
+            leyenda.innerText =`Leyenda: Tipo de Documento de Identidad: 1) DNI 2) Pasaporte 3) Cedula.`
             break;
         case 'numeroDocumento':
             leyenda.innerText =`Leyenda: Número del Documento de Identidad. Debe ser un dato puramente numérico no negativo`
             break;
         case 'telefono':
-            leyenda.innerText =`Leyenda: Ingrese su número telefónico personal. Debe ser un dato puramente numérico`
+            leyenda.innerText =`Leyenda: Ingrese su número telefónico personal. Debe ser un dato puramente numérico no negativo`
             break;
         case 'prioridad':
-            leyenda.innerText =`Leyenda: 1) Normal 2) Urgente. Debe ser un dato puramente numérico`
+            leyenda.innerText =`Leyenda: 1) Normal 2) Urgente.`
             break;
         case 'descripcion':
             leyenda.innerText =`Leyenda: Indique brevemente la razón de su turno. Puede contener cualquier tipo de dato`
@@ -368,7 +389,7 @@ function inputFocus(target){
 const arrayEncuestas = []
 const arrayCheck = []
 
-let estadisticas = new Estadisticas(0 , 0 , 0 , 0 , 0, 0 , 0)
+let estadisticas = new Estadisticas(1 , 0 , 0 , 0 , 0, 0 , 0)
 const encuesta = new FormEncuesta('','','','','','','','','','','')
 
 const arrayFormulario = Object.keys(encuesta)
@@ -377,11 +398,11 @@ const formulario = document.getElementById('formulario')
 const splashScreen = document.getElementById("splash-screen")
 
 //Efecto de Splash Screen
-document.addEventListener('DOMContentLoaded', ()=>{
+/* document.addEventListener('DOMContentLoaded', ()=>{
     setTimeout(()=>{
         splashScreen.className = "splash-hidden"
-    }, 7000)
-})
+    }, 3000)
+}) */
 
 //Por defecto se chequea si existen datos almacenados
 if(localStorage.arrayEncuestas){
@@ -393,17 +414,13 @@ if(localStorage.arrayEncuestas){
 const presentacion = document.getElementById("presentacion")
 presentacion.innerHTML =`
 <div id="ask-surveys" class="col-sm-3">
-    <p>Desea completar una encuesta?</p>
-    <button type="button" onclick="acceptSurveys()" class="btn btn-success ml-5">Si</button>
-    <button type="button" onclick="notSurveys()" class="btn btn-danger ml-5">No</button>
+    <button type="button" onclick="acceptSurveys()" class="btn btn-success ml-5">Desea completar una encuesta?</button>
 </div>
 `;
 
 presentacion.innerHTML += ( localStorage.arrayEncuestas && localStorage.arrayEncuestas !== []) ?`
-<div id="ask-surveys" class="col-sm-3">
-    <p>Desea ver Encuestas anteriores?</p>
-    <button type="button" onclick="showSurveys()" class="btn btn-success ml-5">Si</button>
-    <button type="button" onclick="cerrar('ask-surveys')" class="btn btn-danger ml-5">No</button>
+<div id="ask-surveys" class="col-sm-3 mt-3">
+    <button type="button" onclick="showSurveys(0)" class="btn btn-success ml-5">Desea ver Encuestas anteriores?</button>
 </div>`: 
 `<div id="ask-surveys" class="col-sm-3">
 <p>Lo sentimos no hay encuestas anteriores</p>
@@ -411,9 +428,8 @@ presentacion.innerHTML += ( localStorage.arrayEncuestas && localStorage.arrayEnc
 `;
 
 presentacion.innerHTML += localStorage.Estadisticas ?`
-<div id="ask-stats" class="col-sm-3">
-    <p>Desea ver Estadísticas anteriores?</p>
-    <button type="button" onclick="showStats()" class="btn btn-success ml-5" >Si</button>
+<div id="ask-stats" class="col-sm-3 mt-3">
+    <button type="button" onclick="showStats()" class="btn btn-success ml-5">Estadísticas Almacenadas</button>
     <button type="button" onclick="cerrar('ask-stats')" class="btn btn-danger ml-5">No</button>
 </div>`:
 `<div id="ask-surveys" class="col-sm-3">
