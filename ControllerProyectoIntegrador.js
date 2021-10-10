@@ -2,9 +2,11 @@
 let continuar = false
 let edadEstadisticas = false
 let toggleFlag = false
-let enviado = false
-let enviarEnable = false
-let i = 0
+let showSurveysActive = false
+let showStatsActive = false
+let enviado
+let selectDoc = true
+let selectPrioridad = true
 const passRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*()--__+.])(?=.{8,})/i
 const numberRegex = /^\d*$/
 
@@ -38,21 +40,6 @@ class Estadisticas {
         this.urgenteCount = urgenteCount;
         this.edad = edad;
 
-    }
-
-    show = () => {
-        alert(` 
-        Cantidad de Encuestas: ${this.cantidad}
-        Estadísticas Promedios:
-            Tipo de Documento:
-                DNI: ${ (this.dniCount / this.cantidad) * 100 }%
-                Pasaporte: ${  (this.passportCount / this.cantidad) * 100 }%
-                Cedula: ${  (this.cedulaCount / this.cantidad) * 100 }%
-            Edad: ${ this.edad / this.cantidad } años
-            Prioridad:
-                Normal: ${this.normalCount} veces
-                Urgente: ${this.urgenteCount} veces
-        `)
     }
 }
 //VALIDACIONES ---- VALIDACIONES ---- VALIDACIONES ---- VALIDACIONES
@@ -109,23 +96,52 @@ const orderData = (a, b) => {
 function showStats(){
     const recupero = JSON.parse(localStorage.Estadisticas)
 
-    estadisticas.cantidad = parseInt(recupero.cantidad)
-    estadisticas.dniCount = parseInt(recupero.dniCount)
-    estadisticas.passportCount = parseInt(recupero.passportCount)
-    estadisticas.cedulaCount = parseInt(recupero.cedulaCount)
-    estadisticas.normalCount = parseInt(recupero.normalCount)
-    estadisticas.urgenteCount = parseInt(recupero.urgenteCount)
-    estadisticas.edad = parseInt(recupero.edad)
+    Close( toggleFlag ? 'acceptSurveys' : showSurveysActive ? 'showSurveys' : '' )
 
-    estadisticas.show()
+    $('#showStats').html(`
+        <div id="divStats" class="container">
+            <div class="col-sm-8">
+                <p>Cantidad de encuestas: ${parseInt(recupero.cantidad)} </p>
+                <p>Estadísticas Promedio: </p>
+                <div class="row ml-4">
+                    <Label>DNI: </Label>
+                    <Label class="ml-2">${ (parseInt(recupero.dniCount) / parseInt(recupero.cantidad)) * 100 }%</Label>
+                </div>
+                <div class="row ml-4">
+                    <Label>Pasaporte: </Label>
+                    <Label class="ml-2">${  (parseInt(recupero.passportCount) / parseInt(recupero.cantidad)) * 100 }% </Label>
+                </div>
+                <div class="row ml-4">
+                    <Label>Cedula: </Label>
+                    <Label class="ml-2">${  (parseInt(recupero.cedulaCount) / parseInt(recupero.cantidad)) * 100 }% </Label>
+                </div>
+                
+                <p>Edad: ${ parseInt(recupero.edad) / parseInt(recupero.cantidad) } años </p>
+                
+                <p>Prioridad: </p>
+                <div class="row ml-4">
+                    <Label>Normal: </Label>
+                    <Label class="ml-2">${ parseInt(recupero.normalCount) } veces </Label> 
+                </div>
+                <div class="row ml-4">
+                    <Label>Urgente: </Label>
+                    <Label class="ml-2">${ parseInt(recupero.urgenteCount) } veces </Label> 
+                </div>
+                <button type="button" onclick="Close('showStats')" class="btn btn-danger ml-2">Cerrar</button>
+            </div>
+        </div>
+    `)
+    showStatsActive = true
 }
 
 //Si prevaimente se han llenado encuestas se recuperan y se muestran
 function showSurveys(i) {
     const arrayRecupero = JSON.parse(localStorage.arrayEncuestas)
     arrayRecupero.sort((a, b) => orderData(a.prioridad, b.prioridad))
-    
+
     const surveyRender = document.getElementById('surveyRender')
+
+    Close( toggleFlag ? 'acceptSurveys' : showStatsActive ? 'showStats' : '' )
 
     if (Array.isArray(arrayRecupero) && arrayRecupero[i] !== undefined) {
         //Las encuestas con prioridad "urgente" aparecen primero
@@ -133,52 +149,52 @@ function showSurveys(i) {
     surveyRender.innerHTML = `
             <div id="showSurveysDiv" class="container">
                 <div class="row">
-                    <div class="col-sm-2">
+                    <div class="col-sm-3">
                         <Label>User</Label> <br>
-                        <Label>${arrayRecupero[i].user}</Label> <br>
+                        <input class="form-control" type="text" value="${arrayRecupero[i].user}" disabled readonly><br>
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-3">
                         <Label>Nombre</Label> <br>
-                        <Label>${arrayRecupero[i].nombre}</Label>
+                        <input class="form-control" type="text" value="${arrayRecupero[i].nombre}" disabled readonly><br>
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-3">
                         <Label>Apellido</Label> <br>
-                        <Label>${arrayRecupero[i].apellido}</Label> <br>
+                        <input class="form-control" type="text" value="${arrayRecupero[i].apellido}" disabled readonly><br>
                     </div>
                     
                 </div>
                 <div class="row">
-                    <div class="col-sm-2">
+                    <div class="col-sm-3">
                         <Label>Edad</Label> <br>
-                        <Label>${arrayRecupero[i].edad}</Label>
+                        <input class="form-control" type="text" value="${arrayRecupero[i].edad}" disabled readonly><br>
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-3">
                         <Label>Email</Label> <br>
-                        <Label>${arrayRecupero[i].email}</Label>
+                        <input class="form-control" type="text" value="${arrayRecupero[i].email}" disabled readonly><br>
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-3">
                         <Label>Tipo de Documento</Label> <br>
-                        <Label>${arrayRecupero[i].tipoDocumento}</Label>
+                        <input class="form-control" type="text" value="${arrayRecupero[i].tipoDocumento}" disabled readonly><br>
                     </div>
                     
                 </div>
                 <div class="row">
-                    <div class="col-sm-2">
+                    <div class="col-sm-3">
                         <Label>Nro de Documento</Label> <br>
-                        <Label>${arrayRecupero[i].numeroDocumento}</Label>
+                        <input class="form-control" type="text" value=${arrayRecupero[i].numeroDocumento}" disabled readonly><br>
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-3">
                         <Label>Nro de Telefono</Label> <br>
-                        <Label>${arrayRecupero[i].telefono}</Label>
+                        <input class="form-control" type="text" value="${arrayRecupero[i].telefono}" disabled readonly><br>
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-3">
                         <Label>Prioridad</Label> <br>
-                        <Label>${arrayRecupero[i].prioridad}</Label>
+                        <input class="form-control" type="text" value="${arrayRecupero[i].prioridad}" disabled readonly><br>
                     </div>
                 </div>
-                <div class="col-sm-2">
+                <div style="margin-left: -1rem;" class="col-sm-3">
                         <Label>Descripcion</Label> <br>
-                        <Label>${arrayRecupero[i].descripcion}</Label>
+                        <input class="form-control" type="text" value="${arrayRecupero[i].descripcion}" disabled readonly><br>
                 </div>
                 <button type="button" onclick="showSurveys(${i+1})" class="btn btn-success">Sigiente</button>
                 <button type="button" onclick="Close('showSurveys')" class="btn btn-danger ml-5">Cerrar</button>
@@ -188,12 +204,19 @@ function showSurveys(i) {
     }else if(!Array.isArray(arrayRecupero) || arrayRecupero[i] === undefined || arrayRecupero[i] === null){
         i = 0
     }
+    showSurveysActive = true
 }
 //Si el usuario quiere llenar una encuesta se renderiza el formulario
 function acceptSurveys(){
-    estadisticas.cantidad = enviado ? estadisticas.cantidad+1 : estadisticas.cantidad
-    enviado = false
-    console.log(estadisticas.cantidad);
+    enviado = JSON.parse(localStorage.getItem('enviado'))
+
+    if ( enviado ){
+        estadisticas.cantidad++;
+        localStorage.setItem('enviado', false)
+    }
+    console.log("cantidad", estadisticas.cantidad);
+    Close( showSurveysActive ? 'showSurveys' : showStatsActive ? 'showStats' : '')
+
     !toggleFlag && Array.isArray(arrayFormulario) && arrayFormulario.forEach((item) => {
 
         const itemForm = document.createElement('div')
@@ -247,8 +270,12 @@ function acceptSurveys(){
 
 //Función para ENVIAR el formulario
 function Enviar(){
+    //Limpio banderas de control
     edadEstadisticas = false
+    selectDoc = true
+    selectPrioridad = true
 
+    //Guardo la encuesta que estoy enviando
     if(localStorage.arrayEncuestas){
 
         const arrayRecupero = JSON.parse(localStorage.arrayEncuestas)
@@ -259,7 +286,7 @@ function Enviar(){
         arrayEncuestas.push( encuesta )
         localStorage.arrayEncuestas = JSON.stringify(arrayEncuestas)
     }
-    
+    //Guardo las estadisticas nuevas
     if(localStorage.Estadisticas){
         const objetoRecupero = JSON.parse(localStorage.Estadisticas)
 
@@ -270,9 +297,9 @@ function Enviar(){
     }else{
         localStorage.setItem("Estadisticas", JSON.stringify(estadisticas))
     }
-    enviado = true
-    estadisticas.show()
+    localStorage.setItem('enviado', true)
     Close('acceptSurveys')
+    location.reload()
 }
 
 //Funcion general para cerrar elementos
@@ -294,6 +321,11 @@ function Close( tag ){
 
         }else if(tag === 'showSurveys'){
             document.getElementById('showSurveysDiv').remove()
+            showSurveysActive = false
+        }
+        else if( tag === 'showStats'){
+            document.getElementById('divStats').remove()
+            showStatsActive = false
         }
         
 }
@@ -324,10 +356,21 @@ function inputChange(target){
             encuesta[formField] = target.value
             estadisticas.dniCount = target.value === 'DNI' ? estadisticas.dniCount+1 : estadisticas.dniCount
             estadisticas.passportCount = target.value ==='Pasaporte' ? estadisticas.passportCount+1 : estadisticas.passportCount
-            estadisticas.cedulaCount = target.value === 'cedula' ? estadisticas.cedulaCount+1 : estadisticas.passportCount
+            estadisticas.cedulaCount = target.value === 'Cedula' ? estadisticas.cedulaCount+1 : estadisticas.cedulaCount
 
             estadisticas.normalCount = target.value ==='Normal' ? estadisticas.normalCount+1 : estadisticas.normalCount
             estadisticas.urgenteCount = target.value === 'Urgente' ? estadisticas.urgenteCount+1 : estadisticas.urgenteCount
+
+            //Se deshabilitan los selects una vez que se ha seleccionado un valor
+            //para evitar reingreso del campo y que se alteren de las estadísticas
+            if(selectDoc && (target.value ==='DNI' || target.value ==='Pasaporte' || target.value ==='Cedula')){
+                document.getElementById('tipoDocumento__input').disabled = (target.value ==='DNI' || target.value ==='Pasaporte' || target.value ==='Cedula')
+                selectDoc = false
+            }
+            else if(selectPrioridad && (target.value ==='Normal' || target.value ==='Urgente')){
+                document.getElementById('prioridad__input').disabled = (target.value ==='Normal' || target.value ==='Urgente')
+                selectPrioridad = false
+            }
             break;
     }
     //Recorremos los campos del formulario
@@ -345,7 +388,10 @@ function inputFocus(target){
     
     const formField = target.id.slice(0,-7)
     const leyenda = document.getElementById('leyenda')
-    console.log(leyenda);
+    
+    $('#leyenda').hover(function() {
+        $('#leyenda').addClass("toPurple")
+    })
 
     switch(formField){
         case 'user':
@@ -383,6 +429,7 @@ function inputFocus(target){
             break;
     }
 }
+
 //FIN DE FUNCIONES ---- FIN DE FUNCIONES ---- FIN DE FUNCIONES ---- FIN DE FUNCIONES
 
 //Construccion del DOM ----------- Construccion del DOM ------------------
@@ -397,17 +444,25 @@ const formulario = document.getElementById('formulario')
 
 const splashScreen = document.getElementById("splash-screen")
 
+$('#tituloApp').mouseover(function() {
+    $('#tituloApp').addClass("toPurple")
+})
+$('#tituloApp').mouseleave(function() {
+    $('#tituloApp').addClass("toBlack")
+})
+
 //Efecto de Splash Screen
-/* document.addEventListener('DOMContentLoaded', ()=>{
+document.addEventListener('DOMContentLoaded', ()=>{
     setTimeout(()=>{
         splashScreen.className = "splash-hidden"
-    }, 3000)
-}) */
+    }, 500)
+})
 
 //Por defecto se chequea si existen datos almacenados
-if(localStorage.arrayEncuestas){
+if(localStorage.Estadisticas){
     const objetoRecupero = JSON.parse(localStorage.Estadisticas)
     estadisticas = new Estadisticas(objetoRecupero.cantidad, objetoRecupero.dniCount , objetoRecupero.passportCount , objetoRecupero.cedulaCount, objetoRecupero.normalCount, objetoRecupero.urgenteCount , objetoRecupero.edad)
+    console.log(estadisticas);
 }
 
 //"Presentacion" despliega las opciones para el usuario
@@ -430,7 +485,6 @@ presentacion.innerHTML += ( localStorage.arrayEncuestas && localStorage.arrayEnc
 presentacion.innerHTML += localStorage.Estadisticas ?`
 <div id="ask-stats" class="col-sm-3 mt-3">
     <button type="button" onclick="showStats()" class="btn btn-success ml-5">Estadísticas Almacenadas</button>
-    <button type="button" onclick="cerrar('ask-stats')" class="btn btn-danger ml-5">No</button>
 </div>`:
 `<div id="ask-surveys" class="col-sm-3">
 <p>Lo sentimos no hay estadísticas almacenadas</p>
