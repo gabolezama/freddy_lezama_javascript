@@ -24,11 +24,6 @@ body .toPurple {
   background-color: linen;
 }
 
-body .toBlack {
-  color: black;
-  background-color: transparent;
-}
-
 .col-sm-3 Label {
   font-weight: 200;
   text-decoration: underline;

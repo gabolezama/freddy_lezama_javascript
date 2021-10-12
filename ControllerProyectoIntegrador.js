@@ -388,11 +388,15 @@ function inputFocus(target){
     
     const formField = target.id.slice(0,-7)
     const leyenda = document.getElementById('leyenda')
-    
-    $('#leyenda').hover(function() {
-        $('#leyenda').addClass("toPurple")
-    })
 
+    $('#leyenda').hover(
+        function() {
+            $(this).addClass("toPurple")
+        },
+        function() {
+            $(this).removeClass("toPurple")
+    })
+    
     switch(formField){
         case 'user':
             leyenda.innerText =`Leyenda: Nickname del Usuario. Puede contener números pero NO debe ser un dato puramente numérico`
@@ -444,11 +448,12 @@ const formulario = document.getElementById('formulario')
 
 const splashScreen = document.getElementById("splash-screen")
 
-$('#tituloApp').mouseover(function() {
-    $('#tituloApp').addClass("toPurple")
-})
-$('#tituloApp').mouseleave(function() {
-    $('#tituloApp').addClass("toBlack")
+$('#tituloApp').hover(
+function() {
+    $(this).addClass("toPurple")
+},
+function() {
+    $(this).removeClass("toPurple")
 })
 
 //Efecto de Splash Screen
