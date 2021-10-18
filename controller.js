@@ -1,4 +1,5 @@
-function operar(){
+/* function operar(){
+
     let input = window.prompt("ingrese dato: ");
 
     if (!isNaN(input)) {
@@ -44,4 +45,15 @@ function operar(){
     }
 };
 
-operar();
+operar(); */
+function generateFile() {
+    var fso  = CreateObject("Scripting.FileSystemObject"); 
+    var fh = fso.CreateTextFile("C:\Users\Freddy\Desktop\Practicas de JS\Curso JS Coder\Test.txt", true);
+    fh.WriteLine("miCadenaDeTexto");
+    fh.Close();
+    alert("click")
+}
+
+function validateInput(target){
+    console.log(target.value);
+}
