@@ -32,14 +32,19 @@ function showMessenger(){
 }
 //Funcion que envia mensaje al BOT de telegram
 async function SendMessage(){
+    
+    //Valido que el cuerpo del mensaje no esté vacío
+    if($('#messageBody').val() === undefined || $('#messageBody').val() === null || $('#messageBody').val() === '')
+        alert('No ha cargado ningun mensaje. Ir a encuestas anteriores y cargar una encuesta')
 
-    console.log('submit');
-    $.ajax({
-        url: 'https://api.telegram.org/bot' + $('#token').val() + '/sendMessage',
-        method: 'POST',
-        data: { chat_id: $('#chat_id').val(), text: $('#messageBody').val() },
-        success: function () {
-            alert('your message has been sent!');
-        }
-    });
+    else{
+        $.ajax({
+            url: 'https://api.telegram.org/bot' + $('#token').val() + '/sendMessage',
+            method: 'POST',
+            data: { chat_id: $('#chat_id').val(), text: $('#messageBody').val() },
+            success: function () {
+                alert('Mensaje enviado con Exito!');
+            }
+        });
+    }
 };

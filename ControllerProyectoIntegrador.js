@@ -123,7 +123,7 @@ presentacion.innerHTML += ( localStorage.arrayEncuestas && localStorage.arrayEnc
 <div id="ask-surveys" class="col-sm-3 mt-3">
     <button type="button" onclick="showSurveys(0)" class="btn btn-success ml-5">Desea ver Encuestas anteriores?</button>
 </div>`: 
-`<div id="ask-surveys" class="col-sm-3">
+`<div id="ask-surveys" class="col-sm-3 mt-3 ml-5">
 <p>Lo sentimos no hay encuestas anteriores</p>
 </div>
 `;
@@ -132,12 +132,16 @@ presentacion.innerHTML += localStorage.Estadisticas ?`
 <div id="ask-stats" class="col-sm-3 mt-3">
     <button type="button" onclick="showStats()" class="btn btn-success ml-5">Estadísticas Almacenadas</button>
 </div>`:
-`<div id="ask-surveys" class="col-sm-3">
+`<div id="ask-surveys" class="col-sm-3 mt-3 ml-5">
 <p>Lo sentimos no hay estadísticas almacenadas</p>
 </div>
 `;
 
-presentacion.innerHTML += localStorage.Estadisticas || toggleFlag ?`
+presentacion.innerHTML += ( localStorage.arrayEncuestas && localStorage.arrayEncuestas !== []) ?`
 <div id="telegramButton" class="col-sm-3 mt-3">
     <button type="button" onclick="showMessenger()" class="btn btn-success ml-5">Telegram Messenger</button>
-</div>`: null;
+</div>`: 
+`<div id="telegramButton" class="col-sm-3 mt-3 ml-5">
+<p>Telegram no se puede activar hasta que se cargen datos al sistema</p>
+</div>
+`;
