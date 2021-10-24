@@ -9,6 +9,20 @@ const orderData = (a, b) => {
     return ((a > b) ? -1 : ((a < b) ? 1 : 0))
 }
 
+//Funcion para cargar el cuerpo del mensaje
+function CargarMensaje( ){
+    //Este el el mensaje que será enviado al BOT
+    $('#messageBody').val(`
+    User: ${msgBodyObject.user}
+    Nombre: ${msgBodyObject.nombre}
+    Apellido: ${msgBodyObject.apellido}
+    Edad: ${msgBodyObject.edad}
+    Email: ${msgBodyObject.email}
+    Prioridad: ${msgBodyObject.prioridad}
+    Tipo Documento: ${msgBodyObject.tipoDocumento}
+    ` )
+}
+
 //Si prevaimente se han llenado encuestas recupero las estadísticas anteriores
 function showStats(){
     const recupero = JSON.parse(localStorage.Estadisticas)
@@ -65,14 +79,18 @@ function showStats(){
 //Si prevaimente se han llenado encuestas se recuperan y se muestran
 function showSurveys(i) {
     const arrayRecupero = JSON.parse(localStorage.arrayEncuestas)
-
     //Las encuestas con prioridad "urgente" aparecen primero
     arrayRecupero.sort((a, b) => orderData(a.prioridad, b.prioridad))
 
+    msgBodyObject = new FormEncuesta(arrayRecupero[i].user, '', arrayRecupero[i].nombre, arrayRecupero[i].apellido,
+                     arrayRecupero[i].edad, arrayRecupero[i].email, arrayRecupero[i].tipoDocumento, '', '', arrayRecupero[i].prioridad,'')
+
+    console.log(msgBodyObject);
+
     const surveyRender = document.getElementById('surveyRender')
-
+    
     Close( toggleFlag ? 'acceptSurveys' : showStatsActive ? 'showStats' : '' )
-
+    
     if (Array.isArray(arrayRecupero) && arrayRecupero[i] !== undefined) {
 
     surveyRender.innerHTML = `
@@ -126,8 +144,8 @@ function showSurveys(i) {
                         <input class="form-control" type="text" value="${arrayRecupero[i].descripcion}" disabled readonly><br>
                 </div>
                 <button type="button" onclick="showSurveys(${i+1})" class="btn btn-success">Sigiente</button>
+                <button type="button" onclick="CargarMensaje()" class="btn btn-warning ml-5">Cargar</button>
                 <button type="button" onclick="Close('showSurveys')" class="btn btn-danger ml-5">Cerrar</button>
-                
             </div>
             `
     }else if(!Array.isArray(arrayRecupero) || arrayRecupero[i] === undefined || arrayRecupero[i] === null){
@@ -226,6 +244,7 @@ function Enviar(){
     }else{
         localStorage.setItem("Estadisticas", JSON.stringify(estadisticas))
     }
+
     localStorage.setItem('enviado', true)
     Close('acceptSurveys')
     location.reload()
@@ -258,7 +277,9 @@ function Close( tag ){
             $('#chartDiv').remove()
             $('#chartDiv2').remove()
         }
-        
+        else if( tag === 'messenger'){
+            document.getElementById('formMessageDiv').remove()
+        }
 }
 
 //AL salir del campo se valida el valor ingresado

@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Ephesis&display=swap');
 body{
+    width: auto;
     background: #3E5151;  /* fallback for old browsers */
     background: -webkit-linear-gradient(to right, #DECBA4, #3E5151);  /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(to right, #DECBA4, #3E5151); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
@@ -16,6 +17,28 @@ body{
     .toPurple{
         color: red;
         background-color: linen;
+    }
+    #formMessage{
+        display: flex;
+        height: 9rem;
+        flex-wrap: nowrap;
+        margin-left: 5rem;
+        margin-top: 5rem;
+        bottom: 0;
+        position: absolute;
+        border: 3px solid grey;
+        border-radius: 10px;
+        
+        #telegramFormButton{
+            display: flex;
+            flex-direction: row;
+            button{
+                margin-left: 1rem;
+                width: auto;
+                height: auto;
+                margin-bottom: 5px;
+            }
+        }
     }
 }
 
@@ -59,17 +82,12 @@ body{
     top: 2.5rem;
 }
 form{
-    padding-top: 2rem;
+    padding-top: 1rem;
     button{
         margin-top: 2rem;
         margin-left: 4rem;
         height: 2.5rem;
     }
-}
-.itemForm{
-    display: flex;
-    flex-direction: column;
-    justify-content: left;
 }
 
 .showSurvey{

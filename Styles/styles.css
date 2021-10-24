@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Ephesis&display=swap");
 body {
+  width: auto;
   background: #3E5151;
   /* fallback for old browsers */
   /* Chrome 10-25, Safari 5.1-6 */
@@ -24,6 +25,38 @@ body #leyenda {
 body .toPurple {
   color: red;
   background-color: linen;
+}
+
+body #formMessage {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  height: 9rem;
+  -ms-flex-wrap: nowrap;
+      flex-wrap: nowrap;
+  margin-left: 5rem;
+  margin-top: 5rem;
+  bottom: 0;
+  position: absolute;
+  border: 3px solid grey;
+  border-radius: 10px;
+}
+
+body #formMessage #telegramFormButton {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+
+body #formMessage #telegramFormButton button {
+  margin-left: 1rem;
+  width: auto;
+  height: auto;
+  margin-bottom: 5px;
 }
 
 .col-sm-3 Label {
@@ -73,26 +106,13 @@ body .toPurple {
 }
 
 form {
-  padding-top: 2rem;
+  padding-top: 1rem;
 }
 
 form button {
   margin-top: 2rem;
   margin-left: 4rem;
   height: 2.5rem;
-}
-
-.itemForm {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -webkit-box-pack: left;
-      -ms-flex-pack: left;
-          justify-content: left;
 }
 
 .showSurvey {

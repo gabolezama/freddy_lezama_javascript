@@ -83,6 +83,7 @@ const isValidNumber = ( variable, flag ) =>{
 //Construccion del DOM ----------- Construccion del DOM ------------------
 const arrayEncuestas = []
 const arrayCheck = []
+let msgBodyObject = null
 
 let estadisticas = new Estadisticas(1 , 0 , 0 , 0 , 0, 0 , 0)
 const encuesta = new FormEncuesta('','','','','','','','','','','')
@@ -100,7 +101,6 @@ function() {
 
 //Efecto de Splash Screen
 document.addEventListener('DOMContentLoaded', ()=>{
-
     $("#splash-screen").fadeIn(1000).fadeOut( 2000 )
 })
 
@@ -136,3 +136,8 @@ presentacion.innerHTML += localStorage.Estadisticas ?`
 <p>Lo sentimos no hay estadísticas almacenadas</p>
 </div>
 `;
+
+presentacion.innerHTML += localStorage.Estadisticas || toggleFlag ?`
+<div id="telegramButton" class="col-sm-3 mt-3">
+    <button type="button" onclick="showMessenger()" class="btn btn-success ml-5">Telegram Messenger</button>
+</div>`: null;
