@@ -77,15 +77,26 @@ function showStats(){
 }
 
 //Si prevaimente se han llenado encuestas se recuperan y se muestran
-function showSurveys(i) {
+function showSurveys(i, tag) {
     const arrayRecupero = JSON.parse(localStorage.arrayEncuestas)
     //Las encuestas con prioridad "urgente" aparecen primero
     arrayRecupero.sort((a, b) => orderData(a.prioridad, b.prioridad))
+    
+    if( arrayRecupero[i] === undefined || arrayRecupero[i] === null ) i = 0;
 
     msgBodyObject = new FormEncuesta(arrayRecupero[i].user, '', arrayRecupero[i].nombre, arrayRecupero[i].apellido,
                      arrayRecupero[i].edad, arrayRecupero[i].email, arrayRecupero[i].tipoDocumento, '', '', arrayRecupero[i].prioridad,'')
 
-    console.log(msgBodyObject);
+
+    if(tag ==='delete'){
+
+        Eliminar(arrayRecupero[i])
+        arrayRecupero.splice(i,1)   
+        localStorage.arrayEncuestas = JSON.stringify( arrayRecupero )
+        Close('showSurveys')
+        alert('Ha eliminado la encuesta de forma permanente!')
+        location.reload()
+    }
 
     const surveyRender = document.getElementById('surveyRender')
     
@@ -143,9 +154,10 @@ function showSurveys(i) {
                         <Label>Descripcion</Label> <br>
                         <input class="form-control" type="text" value="${arrayRecupero[i].descripcion}" disabled readonly><br>
                 </div>
-                <button type="button" onclick="showSurveys(${i+1})" class="btn btn-success">Sigiente</button>
+                <button type="button" onclick="showSurveys(${i+1}, 'null')" class="btn btn-success">Sigiente</button>
                 <button type="button" onclick="CargarMensaje()" class="btn btn-warning ml-5">Cargar</button>
-                <button type="button" onclick="Close('showSurveys')" class="btn btn-danger ml-5">Cerrar</button>
+                <button type="button" onclick="showSurveys(${i}, 'delete')" class="btn btn-danger ml-5">Eliminar</button>
+                <button type="button" onclick="Close('showSurveys')" class="btn btn-primary ml-5">Cerrar</button>
             </div>
             `
     }else if(!Array.isArray(arrayRecupero) || arrayRecupero[i] === undefined || arrayRecupero[i] === null){
@@ -280,6 +292,35 @@ function Close( tag ){
         else if( tag === 'messenger'){
             document.getElementById('formMessageDiv').remove()
         }
+}
+
+function Eliminar(encuesta){
+    const estadisticas = JSON.parse(localStorage.Estadisticas)
+
+    estadisticas.cantidad = estadisticas.cantidad === 0? 0 : parseInt(estadisticas.cantidad)-1
+    estadisticas.edad = estadisticas.edad === 0? 0 : estadisticas.edad - parseInt(encuesta.edad)
+
+    switch(encuesta.tipoDocumento){
+        case 'Pasaporte':
+            estadisticas.passportCount = estadisticas.passportCount === 0? 0 : estadisticas.passportCount-1
+            break;
+        case 'DNI':
+            estadisticas.dniCount = estadisticas.dniCount === 0? 0 : estadisticas.dniCount-1
+            break;
+        case 'Cedula':
+            estadisticas.cedulaCount = estadisticas.cedulaCount === 0? 0 : estadisticas.cedulaCount-1
+            break;
+    }
+    switch(encuesta.prioridad){
+        case 'Normal':
+            estadisticas.normalCount = estadisticas.normalCount === 0? 0 : estadisticas.normalCount-1
+            break;
+        case 'Urgente':
+            estadisticas.urgenteCount = estadisticas.urgenteCount === 0? 0 : estadisticas.urgenteCount-1
+            break;
+    }
+    localStorage.Estadisticas = JSON.stringify(estadisticas);
+
 }
 
 //AL salir del campo se valida el valor ingresado

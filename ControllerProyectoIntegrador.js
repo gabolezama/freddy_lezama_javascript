@@ -84,6 +84,7 @@ const isValidNumber = ( variable, flag ) =>{
 const arrayEncuestas = []
 const arrayCheck = []
 let msgBodyObject = null
+let showButtonStat, showButtonSurvey
 
 let estadisticas = new Estadisticas(1 , 0 , 0 , 0 , 0, 0 , 0)
 const encuesta = new FormEncuesta('','','','','','','','','','','')
@@ -108,8 +109,13 @@ document.addEventListener('DOMContentLoaded', ()=>{
 if(localStorage.Estadisticas){
     const objetoRecupero = JSON.parse(localStorage.Estadisticas)
     estadisticas = new Estadisticas(objetoRecupero.cantidad, objetoRecupero.dniCount , objetoRecupero.passportCount , objetoRecupero.cedulaCount, objetoRecupero.normalCount, objetoRecupero.urgenteCount , objetoRecupero.edad)
-    console.log(estadisticas);
+    
+    showButtonStat = !(objetoRecupero.cantidad === 0 && objetoRecupero.dniCount === 0 && objetoRecupero.passportCount === 0 && 
+        objetoRecupero.cedulaCount === 0 && objetoRecupero.normalCount === 0 && objetoRecupero.urgenteCount === 0 && objetoRecupero.edad === 0)
+     
 }
+
+showButtonSurvey = ( localStorage.arrayEncuestas !== undefined ? JSON.parse(localStorage.arrayEncuestas).length > 0 ? true :  JSON.parse(localStorage.arrayEncuestas) === [] : false)
 
 //"Presentacion" despliega las opciones para el usuario
 const presentacion = document.getElementById("presentacion")
@@ -119,7 +125,7 @@ presentacion.innerHTML =`
 </div>
 `;
 
-presentacion.innerHTML += ( localStorage.arrayEncuestas && localStorage.arrayEncuestas !== []) ?`
+presentacion.innerHTML += showButtonSurvey ?`
 <div id="ask-surveys" class="col-sm-3 mt-3">
     <button type="button" onclick="showSurveys(0)" class="btn btn-success ml-5">Desea ver Encuestas anteriores?</button>
 </div>`: 
@@ -128,7 +134,7 @@ presentacion.innerHTML += ( localStorage.arrayEncuestas && localStorage.arrayEnc
 </div>
 `;
 
-presentacion.innerHTML += localStorage.Estadisticas ?`
+presentacion.innerHTML += showButtonStat ?`
 <div id="ask-stats" class="col-sm-3 mt-3">
     <button type="button" onclick="showStats()" class="btn btn-success ml-5">Estadísticas Almacenadas</button>
 </div>`:
@@ -137,7 +143,7 @@ presentacion.innerHTML += localStorage.Estadisticas ?`
 </div>
 `;
 
-presentacion.innerHTML += ( localStorage.arrayEncuestas && localStorage.arrayEncuestas !== []) ?`
+presentacion.innerHTML += showButtonSurvey ?`
 <div id="telegramButton" class="col-sm-3 mt-3">
     <button type="button" onclick="showMessenger()" class="btn btn-success ml-5">Telegram Messenger</button>
 </div>`: 

@@ -23,7 +23,7 @@ function showMessenger(){
             <textarea class="form-control" id="messageBody" rows="3" disabled></textarea>
         </div>
         <div id="telegramFormButton">
-                <button type="button" class="btn btn-primary" onclick="SendMessage()">Confirm Submit</button>
+                <button type="button" class="btn btn-primary" onclick="SendMessage()">Enviar a Telegram</button>
                 <button class="btn btn-danger" onclick="Close('messenger')">Close</button>   
         </div>
     </form>`
